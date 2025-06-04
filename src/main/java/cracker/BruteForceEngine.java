@@ -1,17 +1,16 @@
 package cracker;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
-public class DictionaryCracker {
+public class BruteForceEngine {
     private String targetHash;
     private String algorithm;
     private String wordlistPath;
 
-    public DictionaryCracker(String targetHash, String algorithm, String wordlistPath) {
+    public BruteForceEngine(String targetHash, String algorithm, String wordlistPath) {
         this.targetHash = targetHash;
         this.algorithm = algorithm;
         this.wordlistPath = wordlistPath;
@@ -21,7 +20,7 @@ public class DictionaryCracker {
         try(BufferedReader br = new BufferedReader(new FileReader(wordlistPath))) {
             String password;
             while ((password = br.readLine()) != null) {
-                String hashedPassword = HashUtils.hash(password, algorithm);
+                String hashedPassword = DigestEngine.hash(password, algorithm);
                 if (hashedPassword.equalsIgnoreCase(targetHash)) {
                     System.out.print("Password found: " + password);
                     return;

@@ -3,7 +3,7 @@ package cracker;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class HashUtils {
+public class DigestEngine {
     public static String hash(String password, String algorithm) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance(algorithm);
         byte[] digest = md.digest(password.getBytes());

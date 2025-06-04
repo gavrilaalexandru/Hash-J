@@ -14,7 +14,7 @@ public class HashJMain {
             System.out.print("Wordlist path: ");
             String wordlistPath = scanner.nextLine();
 
-            DictionaryCracker cracker = new DictionaryCracker(targetHash, algorithm, wordlistPath);
+            BruteForceEngine cracker = new BruteForceEngine(targetHash, algorithm, wordlistPath);
             cracker.crack();
         } catch (Exception e) {
             throw new RuntimeException(e);
