@@ -13,6 +13,9 @@ public class CrackerApp {
 
             System.out.print("Wordlist path: ");
             String wordlistPath = scanner.nextLine();
+
+            DictionaryCracker cracker = new DictionaryCracker(targetHash, algorithm, wordlistPath);
+            cracker.crack();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
