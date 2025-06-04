@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 public class DictionaryCracker {
     private String targetHash;
@@ -20,9 +21,14 @@ public class DictionaryCracker {
         try(BufferedReader br = new BufferedReader(new FileReader(wordlistPath))) {
             String password;
             while ((password = br.readLine()) != null) {
-                String hashedPassword;
+                String hashedPassword = HashUtils.hash(password, algorithm);
+                if (hashedPassword.equalsIgnoreCase(targetHash)) {
+                    System.out.print("Password found: " + password);
+                    return;
+                }
             }
-        } catch (IOException e) {
+            System.out.print("Password not found");
+        } catch (IOException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
