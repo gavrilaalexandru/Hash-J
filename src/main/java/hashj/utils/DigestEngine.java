@@ -1,4 +1,4 @@
-package cracker;
+package hashj.utils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

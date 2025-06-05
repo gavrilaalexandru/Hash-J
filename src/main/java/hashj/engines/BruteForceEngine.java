@@ -1,4 +1,6 @@
-package cracker;
+package hashj.engines;
+
+import hashj.utils.DigestEngine;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

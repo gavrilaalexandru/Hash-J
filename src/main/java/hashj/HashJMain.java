@@ -1,4 +1,6 @@
-package cracker;
+package hashj;
+
+import hashj.engines.BruteForceEngine;
 
 import java.util.Scanner;
 
