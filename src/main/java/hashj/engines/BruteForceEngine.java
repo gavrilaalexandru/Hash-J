@@ -1,6 +1,6 @@
 package hashj.engines;
 
-import hashj.utils.DigestEngine;
+import hashj.utils.DigestProcessor;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -22,7 +22,7 @@ public class BruteForceEngine {
         try(BufferedReader br = new BufferedReader(new FileReader(wordlistPath))) {
             String password;
             while ((password = br.readLine()) != null) {
-                String hashedPassword = DigestEngine.hash(password, algorithm);
+                String hashedPassword = DigestProcessor.hash(password, algorithm);
                 if (hashedPassword.equalsIgnoreCase(targetHash)) {
                     System.out.print("Password found: " + password);
                     return;
