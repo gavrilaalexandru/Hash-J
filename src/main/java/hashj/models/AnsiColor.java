@@ -5,9 +5,16 @@ public enum AnsiColor {
     RED("\u001B[31m"),
     GREEN("\u001B[32m"),
     YELLOW("\u001B[33m"),
-    CYAN("\u001B[36m");
+    CYAN("\u001B[36m"),
+    CLEAR_SCREEN("\033[H\033[2J") {
+        @Override
+        public void execute() {
+            System.out.print(this.code);
+            System.out.flush();
+        }
+    };
 
-    private final String code;
+    protected final String code;
 
     AnsiColor(String code) {
         this.code = code;
@@ -16,5 +23,9 @@ public enum AnsiColor {
     @Override
     public String toString() {
         return code;
+    }
+
+    public void execute() {
+
     }
 }
