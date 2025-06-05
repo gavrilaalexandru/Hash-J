@@ -4,21 +4,20 @@ import java.util.Scanner;
 
 public class HashJMain {
     public static void main(String[] args) {
-        try(Scanner scanner = new Scanner(System.in)) {
+        try(Scanner scanner = new Scanner(System.in)) { // validating user input
             System.out.print("Target hash: ");
-            String targetHash = scanner.nextLine();
+            String targetHash = scanner.nextLine(); // can be any string, no restrictions
 
             System.out.print("Hash algorithm: ");
-            String algorithm = scanner.nextLine();
+            String algorithm = scanner.nextLine(); // should be one from a predefined list (enum)
 
             System.out.print("Wordlist path: ");
-            String wordlistPath = scanner.nextLine();
+            String wordlistPath = scanner.nextLine(); // can be any string, no restrictions
 
             BruteForceEngine cracker = new BruteForceEngine(targetHash, algorithm, wordlistPath);
             cracker.crack();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     } // end main method
 } // end class
