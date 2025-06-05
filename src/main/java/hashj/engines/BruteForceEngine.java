@@ -34,6 +34,8 @@ public class BruteForceEngine {
         try(BufferedReader br = new BufferedReader(new FileReader(wordlistPath))) {
             AnsiColor.CLEAR_SCREEN.execute();
             System.out.println(AnsiColor.YELLOW + "Starting brute force...");
+            long startTime = System.currentTimeMillis();
+
             String password;
             long lines = countLines();
             long currentLine = 0;
@@ -42,13 +44,18 @@ public class BruteForceEngine {
                 currentLine++;
                 double progress = (double) (currentLine * 100) / lines;
                 System.out.printf(AnsiColor.CYAN + "[*] Trying: %s (%.2f%%)\n" + AnsiColor.RESET, password, progress);
+
                 String hashedPassword = DigestProcessor.hash(password, algorithm);
                 if (hashedPassword.equalsIgnoreCase(targetHash)) {
-                    System.out.println(AnsiColor.GREEN + "Password found: " + password + AnsiColor.RESET);
+                    long endTime = System.currentTimeMillis();
+                    System.out.println(AnsiColor.GREEN + "Password found: " + password);
+                    System.out.printf("Elapsed time: %.2f seconds\n" + AnsiColor.RESET, (endTime - startTime) / 1000.0);
                     return;
                 }
             }
-            System.out.print(AnsiColor.RED + "Password not found" + AnsiColor.RESET);
+            long endTime = System.currentTimeMillis();
+            System.out.println(AnsiColor.RED + "Password not found");
+            System.out.printf("Elapsed time: %.2f seconds\n" + AnsiColor.RESET, (endTime - startTime) / 1000.0);
         } catch (IOException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
