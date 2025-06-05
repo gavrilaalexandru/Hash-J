@@ -29,7 +29,7 @@ public class BruteForceEngine {
         }
     }
 
-        public void crack() {
+    public void crack() {
         try(BufferedReader br = new BufferedReader(new FileReader(wordlistPath))) {
             String password;
             while ((password = br.readLine()) != null) {
