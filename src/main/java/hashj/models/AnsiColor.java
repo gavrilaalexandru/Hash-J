@@ -6,7 +6,7 @@ public enum AnsiColor {
     GREEN("\u001B[32m"),
     YELLOW("\u001B[33m"),
     CYAN("\u001B[36m"),
-    CLEAR_SCREEN("\033[H\033[2J") {
+    CLEAR_SCREEN("\033[2J\033[H") {
         @Override
         public void execute() {
             System.out.print(this.code);
