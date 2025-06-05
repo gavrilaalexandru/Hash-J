@@ -3,7 +3,7 @@ package hashj;
 import hashj.engines.BruteForceEngine;
 import java.util.Scanner;
 
-public class HashJMain {
+public class HashJ {
     public static void main(String[] args) {
         try(Scanner scanner = new Scanner(System.in)) { // validating user input
             System.out.print("Target hash: ");
