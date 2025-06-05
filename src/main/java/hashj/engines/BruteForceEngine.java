@@ -1,5 +1,6 @@
 package hashj.engines;
 
+import hashj.models.AnsiColor;
 import hashj.utils.DigestProcessor;
 
 import java.io.BufferedReader;
@@ -32,14 +33,20 @@ public class BruteForceEngine {
     public void crack() {
         try(BufferedReader br = new BufferedReader(new FileReader(wordlistPath))) {
             String password;
+            long lines = countLines();
+            long currentLine = 0;
+
             while ((password = br.readLine()) != null) {
+                currentLine++;
+                double progress = (double) (currentLine * 100) / lines;
+                System.out.printf(AnsiColor.CYAN + "[*] Trying: %s (%.2f%%)\n" + AnsiColor.RESET, password, progress);
                 String hashedPassword = DigestProcessor.hash(password, algorithm);
                 if (hashedPassword.equalsIgnoreCase(targetHash)) {
-                    System.out.print("Password found: " + password);
+                    System.out.print(AnsiColor.GREEN + "Password found: " + password + AnsiColor.RESET);
                     return;
                 }
             }
-            System.out.print("Password not found");
+            System.out.print(AnsiColor.RED + "Password not found" + AnsiColor.RESET);
         } catch (IOException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
