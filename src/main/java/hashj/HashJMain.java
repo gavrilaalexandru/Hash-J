@@ -1,6 +1,7 @@
 package hashj;
 
 import hashj.engines.BruteForceEngine;
+import hashj.models.HashType;
 
 import java.util.Scanner;
 
@@ -12,6 +13,10 @@ public class HashJMain {
 
             System.out.print("Hash algorithm: ");
             String algorithm = scanner.nextLine(); // should be one from a predefined list (enum)
+
+            if (!HashType.isValid(algorithm)) {
+                throw new IllegalArgumentException("Invalid algorithm: " + algorithm);
+            }
 
             System.out.print("Wordlist path: ");
             String wordlistPath = scanner.nextLine(); // can be any string, no restrictions
