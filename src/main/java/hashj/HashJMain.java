@@ -16,8 +16,8 @@ public class HashJMain {
             System.out.print("Wordlist path: ");
             String wordlistPath = scanner.nextLine(); // can be any string, no restrictions
 
-            BruteForceEngine cracker = new BruteForceEngine(targetHash, algorithm, wordlistPath);
-            cracker.crack();
+            BruteForceEngine bruteForceEngine = new BruteForceEngine(targetHash, algorithm, wordlistPath);
+            bruteForceEngine.crack();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
