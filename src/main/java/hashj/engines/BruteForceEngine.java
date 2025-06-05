@@ -5,7 +5,10 @@ import hashj.utils.DigestProcessor;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
+import java.util.stream.Stream;
 
 public class BruteForceEngine {
     private String targetHash;
@@ -18,7 +21,15 @@ public class BruteForceEngine {
         this.wordlistPath = wordlistPath;
     }
 
-    public void crack() {
+    public long countLines() {
+        try(Stream<String> lines = Files.lines(Paths.get(wordlistPath))) {
+            return lines.count();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+        public void crack() {
         try(BufferedReader br = new BufferedReader(new FileReader(wordlistPath))) {
             String password;
             while ((password = br.readLine()) != null) {
@@ -33,5 +44,4 @@ public class BruteForceEngine {
             throw new RuntimeException(e);
         }
     }
-
 } // end class
