@@ -32,6 +32,8 @@ public class BruteForceEngine {
 
     public void crack() {
         try(BufferedReader br = new BufferedReader(new FileReader(wordlistPath))) {
+            AnsiColor.CLEAR_SCREEN.execute();
+            System.out.println(AnsiColor.YELLOW + "Starting brute force...");
             String password;
             long lines = countLines();
             long currentLine = 0;
@@ -42,7 +44,7 @@ public class BruteForceEngine {
                 System.out.printf(AnsiColor.CYAN + "[*] Trying: %s (%.2f%%)\n" + AnsiColor.RESET, password, progress);
                 String hashedPassword = DigestProcessor.hash(password, algorithm);
                 if (hashedPassword.equalsIgnoreCase(targetHash)) {
-                    System.out.print(AnsiColor.GREEN + "Password found: " + password + AnsiColor.RESET);
+                    System.out.println(AnsiColor.GREEN + "Password found: " + password + AnsiColor.RESET);
                     return;
                 }
             }
