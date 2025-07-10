@@ -33,7 +33,7 @@ public class HashJ {
     private static void printBanner() {
         System.out.println(AnsiColor.CYAN + """
                 ╔══════════════════════════════════════╗
-                ║              HashJ v2.0              ║
+                ║                HashJ                 ║
                 ║       Multithreaded Hash Cracker     ║
                 ╚══════════════════════════════════════╝
                 """ + AnsiColor.RESET);
