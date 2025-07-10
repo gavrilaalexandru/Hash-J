@@ -12,14 +12,16 @@ import java.security.NoSuchAlgorithmException;
 import java.util.stream.Stream;
 
 public class BruteForceEngine {
-    private String targetHash;
-    private String algorithm;
-    private String wordlistPath;
+    private final String targetHash;
+    private final String algorithm;
+    private final String wordlistPath;
+    private final int noThreads;
 
-    public BruteForceEngine(String targetHash, String algorithm, String wordlistPath) {
+    public BruteForceEngine(String targetHash, String algorithm, String wordlistPath, int noThreads) {
         this.targetHash = targetHash;
         this.algorithm = algorithm;
         this.wordlistPath = wordlistPath;
+        this.noThreads = noThreads;
     }
 
     public long countLines() {

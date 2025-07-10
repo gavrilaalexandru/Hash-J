@@ -23,7 +23,7 @@ public class HashJ {
             System.out.println(AnsiColor.YELLOW + "Number of threads (default: " + Runtime.getRuntime().availableProcessors() + "): " + AnsiColor.RESET);
             String threadsInput = scanner.nextLine();
             int noThreads = threadsInput.isEmpty() ? Runtime.getRuntime().availableProcessors() : Integer.parseInt(threadsInput);
-            BruteForceEngine bruteForceEngine = new BruteForceEngine(targetHash, algorithm, wordlistPath);
+            BruteForceEngine bruteForceEngine = new BruteForceEngine(targetHash, algorithm, wordlistPath, noThreads);
             bruteForceEngine.crack();
         } catch (Exception e) {
             System.out.println(AnsiColor.RED + "Error: " + e.getMessage() + AnsiColor.RESET);;
