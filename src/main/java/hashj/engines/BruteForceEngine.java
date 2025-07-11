@@ -39,7 +39,7 @@ public class BruteForceEngine {
     }
 
     public long countLines() {
-        try(Stream<String> lines = Files.lines(Paths.get(wordlistPath), java.nio.charset.StandardCharsets.UTF_8)) {
+        try (Stream<String> lines = Files.lines(Paths.get(wordlistPath), StandardCharsets.UTF_8)) {
             return lines.count();
         } catch (IOException e) {
             throw new RuntimeException("Failed to count wordlist lines: " + e.getMessage());
@@ -53,7 +53,7 @@ public class BruteForceEngine {
         this.startTime = System.currentTimeMillis();
         this.totalPasswords.set(countLines());
 
-        ExecutorService executor = Executors.newFixedThreadPool(noThreads + 2); // + 2 for UI and reader
+        ExecutorService executor = Executors.newFixedThreadPool(noThreads + 2); // +2 for UI and reader
         BlockingQueue<String> passwordQueue = new LinkedBlockingQueue<>(noThreads * 10);
 
         Future<?> readerTask = executor.submit(() -> readPasswords(passwordQueue));
@@ -63,33 +63,41 @@ public class BruteForceEngine {
         for (int i = 0; i < noThreads; i++) {
             final int threadId = i;
             workers[i] = CompletableFuture.runAsync(() -> processPasswords(passwordQueue, threadId), executor);
-            }
+        }
 
         try {
             readerTask.get();
-
             for (int i = 0; i < noThreads; i++) {
                 passwordQueue.offer("__POISON_PILL__");
             }
-
             CompletableFuture.allOf(workers).get();
         } catch (ExecutionException | InterruptedException e) {
             System.err.println(AnsiColor.RED + "Thread execution error: " + e.getMessage() + AnsiColor.RESET);
         } finally {
             uiTask.cancel(true);
+            while (!uiTask.isDone() && !executor.isShutdown()) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
             executor.shutdown();
             try {
-                if (!executor.awaitTermination(2, TimeUnit.SECONDS)) {
+                if (!executor.awaitTermination(3, TimeUnit.SECONDS)) {
                     executor.shutdownNow();
                 }
             } catch (InterruptedException e) {
                 executor.shutdownNow();
+                Thread.currentThread().interrupt();
             }
         }
         printResults();
     }
 
     private void printHeader() {
+        System.out.print("\033[2J\033[1;1H"); // Clear screen and move cursor to top
         System.out.println(AnsiColor.CYAN + "╔═══════════════════════════════════════════════════════════════╗");
         System.out.println("║                    HashJ - Brute Force Attack                 ║");
         System.out.println("╠═══════════════════════════════════════════════════════════════╣");
@@ -102,7 +110,7 @@ public class BruteForceEngine {
     }
 
     private void readPasswords(BlockingQueue<String> queue) {
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(wordlistPath), StandardCharsets.UTF_8))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(wordlistPath), StandardCharsets.UTF_8))) {
             String password;
             while ((password = br.readLine()) != null && !found.get()) {
                 try {
@@ -153,7 +161,7 @@ public class BruteForceEngine {
         try {
             while (!found.get()) {
                 synchronized (displayLock) {
-                    System.out.println("\033[8;1H");
+                    System.out.print("\033[2J\033[1;1H"); // Clear screen and reset cursor
                     long checked = checkedPasswords.get();
                     long total = totalPasswords.get();
                     double progress = total > 0 ? (double) checked / total * 100 : 0;
@@ -166,7 +174,7 @@ public class BruteForceEngine {
 
                     System.out.flush();
                 }
-                Thread.sleep(100);
+                Thread.sleep(300); // Reduced update frequency for stability
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -177,18 +185,22 @@ public class BruteForceEngine {
         int barWidth = 50;
         int filled = (int) (progress / 100 * barWidth);
 
+        System.out.print("\033[2K"); // Clear current line
         System.out.print(AnsiColor.YELLOW + "Progress: [");
         System.out.print(AnsiColor.GREEN + "█".repeat(filled));
         System.out.print(AnsiColor.DARK_GRAY + "░".repeat(barWidth - filled));
         System.out.printf(AnsiColor.YELLOW + "] %.1f%%", progress);
         System.out.printf(" (%,d/%,d)%n", checked, total);
+        System.out.print("\033[2K"); // Clear current line
         System.out.printf("Speed: %s%.0f passwords/sec%s%n%n", AnsiColor.CYAN, rate, AnsiColor.RESET);
     }
 
     private void printThreadStatus() {
+        System.out.print("\033[2K"); // Clear current line
         System.out.println(AnsiColor.BLUE + "Thread Status:" + AnsiColor.RESET);
         for (int i = 0; i < noThreads; i++) {
             String current = currentPasswords[i];
+            System.out.print("\033[2K"); // Clear current line
             if (current != null) {
                 System.out.printf("  Thread %d: %s%-20s%s%n",
                         i + 1, AnsiColor.WHITE,
@@ -203,22 +215,26 @@ public class BruteForceEngine {
     }
 
     private void printStats(long elapsed, double rate) {
+        System.out.print("\033[2K"); // Clear current line
         System.out.println(AnsiColor.MAGENTA + "Statistics:" + AnsiColor.RESET);
+        System.out.print("\033[2K"); // Clear current line
         System.out.printf("  Elapsed: %s%.2f seconds%s%n", AnsiColor.WHITE, elapsed / 1000.0, AnsiColor.RESET);
+        System.out.print("\033[2K"); // Clear current line
         System.out.printf("  Average: %s%.0f passwords/sec%s%n", AnsiColor.WHITE, rate, AnsiColor.RESET);
 
-        if (rate > 0) {
+        if (rate > 0 && totalPasswords.get() > checkedPasswords.get()) {
             long remaining = totalPasswords.get() - checkedPasswords.get();
             double eta = remaining / rate;
+            System.out.print("\033[2K"); // Clear current line
             System.out.printf("  ETA: %s%s%s%n", AnsiColor.WHITE, formatTime(eta), AnsiColor.RESET);
+        } else {
+            System.out.print("\033[2K"); // Clear current line
+            System.out.printf("  ETA: %s%s%s%n", AnsiColor.WHITE, "N/A", AnsiColor.RESET);
         }
-
-        System.out.print("\033[J");
     }
 
     private void printResults() {
-        AnsiColor.CLEAR_SCREEN.execute();
-
+        System.out.print("\033[2J\033[1;1H"); // Clear screen and move cursor to top
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;
         long checked = checkedPasswords.get();
@@ -230,7 +246,6 @@ public class BruteForceEngine {
             ║            SUCCESS!                  ║
             ╚══════════════════════════════════════╝
             """ + AnsiColor.RESET);
-
             System.out.printf("%s Password found: %s%s%s%n%n",
                     AnsiColor.GREEN, AnsiColor.BOLD, foundPassword, AnsiColor.RESET);
         } else {
@@ -239,7 +254,6 @@ public class BruteForceEngine {
             ║          NOT FOUND                   ║
             ╚══════════════════════════════════════╝
             """ + AnsiColor.RESET);
-
             System.out.printf("%s Password not found in wordlist%s%n%n",
                     AnsiColor.RED, AnsiColor.RESET);
         }
@@ -252,12 +266,15 @@ public class BruteForceEngine {
     }
 
     private String formatTime(double seconds) {
+        if (Double.isNaN(seconds) || seconds < 0) {
+            return "calculating...";
+        }
+
         if (seconds < 60) {
             return String.format("%.0fs", seconds);
-        } else if (seconds < 3600) {
-            return String.format("%.0fm %.0fs", seconds / 60, seconds % 60);
         } else {
-            return String.format("%.0fh %.0fm", seconds / 3600, (seconds % 3600) / 60);
+            int minutes = (int) (seconds / 60);
+            return String.format("%dm", minutes);
         }
     }
-} // end class
+}
