@@ -20,7 +20,7 @@ public class HashJ {
             System.out.print(AnsiColor.YELLOW + "Wordlist path: " + AnsiColor.RESET);
             String wordlistPath = scanner.nextLine(); // can be any string, no restrictions
 
-            System.out.println(AnsiColor.YELLOW + "Number of threads (default: " + Runtime.getRuntime().availableProcessors() + "): " + AnsiColor.RESET);
+            System.out.print(AnsiColor.YELLOW + "Number of threads (default: " + Runtime.getRuntime().availableProcessors() + "): " + AnsiColor.RESET);
             String threadsInput = scanner.nextLine();
             int noThreads = threadsInput.isEmpty() ? Runtime.getRuntime().availableProcessors() : Integer.parseInt(threadsInput);
             BruteForceEngine bruteForceEngine = new BruteForceEngine(targetHash, algorithm, wordlistPath, noThreads);
