@@ -55,8 +55,5 @@ Wordlist path: /path/to/wordlist.txt
 Number of threads (default: 8): 
 ```
 
-## Contributing
-Contributions are welcome! Submit a pull request or open an issue for bug reports, feature requests, or improvements.
-
 ## License
 This project is licensed under the MIT License.
