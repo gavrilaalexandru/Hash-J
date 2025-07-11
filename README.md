@@ -41,19 +41,5 @@ The program shows a progress bar, thread activity, and estimated completion time
 
 The `run.sh` script checks for Maven, compiles the project (`mvn clean package`), and runs the main class (`hashj.HashJ`).
 
-## Example
-```bash
-$ ./run.sh
-Building project...
-[INFO] Scanning for projects...
-[INFO] Building HashJ...
-[INFO] BUILD SUCCESS
-Starting application...
-Target hash: 5f4dcc3b5aa765d61d8327deb882cf99
-Hash algorithm (MD5, SHA-1, SHA-256): MD5
-Wordlist path: /path/to/wordlist.txt
-Number of threads (default: 8): 
-```
-
 ## License
 This project is licensed under the MIT License.
